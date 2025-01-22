@@ -34,11 +34,10 @@ struct OnboardingView: View {
             .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always)) // Mostra os indicadores de página
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color("OnboardingTop"), Color("OnboardingBottom")]),
+                    gradient: Gradient(colors: [Color.orange.opacity(0.3), Color.white]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
-                .ignoresSafeArea()
             )
         }
     }
@@ -53,34 +52,31 @@ struct OnboardingPageView: View {
 
     var body: some View {
         VStack(spacing: 30) {
+            // Ajuste na exibição da imagem
             Image(imageName)
                 .resizable()
-                .scaledToFit()
-                .frame(height: 300)
-                .padding()
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.orange.opacity(0.4), Color.white]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .clipShape(Circle())
-                    .shadow(radius: 10)
-                )
+                .scaledToFill() // Ajuste para a imagem preencher completamente o círculo
+                .frame(width: 200, height: 200) // Definindo o tamanho do círculo
+                .clipShape(Circle()) // Garante o formato circular
+                .overlay(Circle().stroke(Color.white, lineWidth: 4)) // Adiciona uma borda branca
+                .shadow(radius: 10) // Sombra ao redor da imagem
                 .padding()
 
+            // Título
             Text(title)
                 .font(.system(.largeTitle, design: .rounded))
                 .fontWeight(.bold)
                 .foregroundColor(Color.orange)
                 .multilineTextAlignment(.center)
 
+            // Descrição
             Text(description)
                 .font(.system(.body, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.gray)
                 .padding(.horizontal)
 
+            // Botão para iniciar, caso seja o último slide
             if showStartButton {
                 Button(action: {
                     onButtonTap?() // Chama a ação de finalizar o onboarding

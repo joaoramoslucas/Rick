@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct Home: View {
     @ObservedObject var viewModel = HomeViewModel()
@@ -6,7 +7,7 @@ struct Home: View {
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-    
+
     @AppStorage("favoriteCharacters") private var favoriteCharactersData: Data = Data()
     @State private var favoriteCharacters: [Character] = []
 
@@ -22,10 +23,8 @@ struct Home: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                if showMenu {
-                    MenuView(isLoggedIn: .constant(false), navigateToOnboarding: $navigateToOnboarding)
-                } else {
+            ZStack {
+                VStack {
                     TabView(selection: $selectedTab) {
                         CharactersListView(
                             characters: viewModel.characters,
@@ -50,7 +49,7 @@ struct Home: View {
                     }
                     .onAppear {
                         viewModel.getCharacters()
-                        loadFavoriteCharacters() // Carregar favoritos quando a view aparecer
+                        loadFavoriteCharacters()
                     }
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -70,6 +69,23 @@ struct Home: View {
                     .navigationTitle(selectedTab == .characters ? "Personagens" : "Favoritos")
                     .preferredColorScheme(isDarkMode ? .dark : .light)
                 }
+
+                if showMenu {
+                    VStack {
+                        Spacer()
+                        MenuView(isLoggedIn: .constant(false), navigateToOnboarding: $navigateToOnboarding)
+                            .transition(.move(edge: .bottom)) // Animação de entrada
+                    }
+                    .background(Color.black.opacity(0.4).ignoresSafeArea()) // Fundo semi-transparente
+                    .onTapGesture {
+                        withAnimation {
+                            showMenu = false
+                        }
+                    }
+                }
+            }
+            .fullScreenCover(isPresented: $navigateToOnboarding) {
+                OnboardingView()
             }
         }
     }
@@ -80,7 +96,7 @@ struct Home: View {
         } else {
             favoriteCharacters.append(character)
         }
-        saveFavoriteCharacters() // Salva os favoritos toda vez que mudar
+        saveFavoriteCharacters()
     }
 
     private func isFavorite(character: Character) -> Bool {
@@ -100,7 +116,36 @@ struct Home: View {
     }
 }
 
-// MARK: - Characters List View
+// MARK: - MenuView
+
+struct MenuView: View {
+    @Binding var isLoggedIn: Bool
+    @Binding var navigateToOnboarding: Bool
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Button(action: {
+                isLoggedIn = false
+                navigateToOnboarding = true
+            }) {
+                Text("Sair para Login")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(10)
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(radius: 10)
+        .padding(.horizontal)
+    }
+}
+
+// MARK: - CharactersListView
+
 struct CharactersListView: View {
     var characters: [Character]
     var isLoading: Bool
@@ -159,9 +204,8 @@ struct CharactersListView: View {
         }
     }
 }
-// MARK: - Favorites List View
-import SwiftUI
-import Kingfisher
+
+// MARK: - FavoritesListView
 
 struct FavoritesListView: View {
     var characters: [Character]
@@ -221,39 +265,8 @@ struct FavoritesListView: View {
     }
 }
 
-struct MenuView: View {
-    @Binding var isLoggedIn: Bool // Estado de login
-    @Binding var navigateToOnboarding: Bool // Controle da navegação para a tela de login
-
-    var body: some View {
-        VStack {
-            Spacer() // Empurra o menu para o rodapé
-
-            HStack {
-                Button(action: {
-                    // Ação para sair e redirecionar para a tela de login
-                    isLoggedIn = false
-                    navigateToOnboarding = true
-                }) {
-                    Text("Sair para Login")
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity) // Ocupa largura total do botão dentro do HStack
-                        .background(Color.red)
-                        .cornerRadius(8)
-                }
-            }
-            .padding()
-            .background(Color.gray.opacity(0.9)) // Fundo do menu
-            .cornerRadius(12) // Bordas arredondadas do menu
-            .shadow(radius: 5)
-            .frame(maxWidth: .infinity) // Ocupa toda a largura da tela
-        }
-        .edgesIgnoringSafeArea(.bottom) // Faz o menu tocar o rodapé da tela
-    }
-}
-
 // MARK: - ImageLoader
+
 struct ImageLoader: View {
     let url: String?
 
