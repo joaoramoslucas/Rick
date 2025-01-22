@@ -9,20 +9,20 @@ struct OnboardingView: View {
         } else {
             TabView {
                 OnboardingPageView(
-                    title: "Bem-vindo ao RickApp",
+                    title: "Bem-vindo ao RickMovies",
                     description: "Explore os personagens incríveis e mergulhe no universo de Rick and Morty.",
                     imageName: "onboarding1"
                 )
 
                 OnboardingPageView(
                     title: "Descubra seus favoritos",
-                    description: "Veja detalhes de cada personagem e salve os seus favoritos.",
+                    description: "Veja detalhes de cada personagem, salve os seus favoritos e assista todos episódios do seu personagem preferido.",
                     imageName: "onboarding2"
                 )
 
                 OnboardingPageView(
                     title: "Pronto para começar?",
-                    description: "Deslize para começar a explorar o universo agora!",
+                    description: "Clique e comece agora!",
                     imageName: "onboarding3",
                     showStartButton: true,
                     onButtonTap: {

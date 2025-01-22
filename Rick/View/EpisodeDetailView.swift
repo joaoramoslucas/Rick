@@ -51,12 +51,12 @@ struct EpisodeDetailView: View {
                     .font(.title3)
                     .padding()
 
-                    Text("Air Date: \(episode.air_date)")
+                    Text("Lançado: \(episode.air_date)")
                         .font(.title2)
                         .foregroundColor(.secondary)
                         .padding()
 
-                    Text("Episode: \(episode.episode)")
+                    Text("Episódio: \(episode.episode)")
                         .font(.title3)
                         .foregroundColor(.secondary)
                         .padding()

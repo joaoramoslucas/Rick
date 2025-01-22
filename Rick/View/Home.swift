@@ -219,7 +219,7 @@ struct FavoritesListView: View {
     var body: some View {
         ScrollView {
             if characters.isEmpty {
-                Text("Nenhum personagem favorito.")
+                Text("Nenhum personagem adicionado ao favoritos.")
                     .foregroundColor(.gray)
                     .padding()
             } else {
